@@ -24,12 +24,6 @@ instance Show MetricType where
 buildProj :: FilePath -> IO ExitCode
 buildProj projDir = system $ "cd " ++ projDir ++ "; cabal configure -v0; cabal build -v0"
 
--- Time a project
-instance NFData ExitCode
-  where 
-    rnf ExitSuccess = ()
-    rnf (ExitFailure _) = ()
-
 statsFromMetric :: MetricType -> [(String, String)] -> Double
 statsFromMetric RUNTIME stats = let Just muts = lookup "mutator_cpu_seconds" stats
                                     Just gcs = lookup "GC_cpu_seconds" stats
