@@ -15,7 +15,7 @@ import Text.ParserCombinators.Parsec.Language (haskellStyle, reservedOpNames, re
 import Text.ParserCombinators.Parsec.Pos (newPos)
 import Text.Read
 
-import Debug.Trace
+import System.IO
 --
 -- CONFIG FOR FITNESS RUN
 --
@@ -107,21 +107,27 @@ cliCfg = do
   putStrLn "<Enter> to use [defaults]"
 
   putStr "Path to project program sources [\".\"]:"
+  hFlush stdout
   projDir <- readLnWDefault $ (show defaultProjDir)
 
   putStr "Time alloted for Autobahn [3h]:"
+  hFlush stdout
   timeLimit <- readLnWDefault $ (show defaultTimeLimit) ++ "h"
 
   putStr "File(s) to add/remove bangs in [\"Main.hs\"]:"
+  hFlush stdout
   srcs <- readLnWDefault defaultCoverage
 
   putStr "Performance metric to optimize [\"runtime\"]:"
+  hFlush stdout
   metric <- readLnWDefault "runtime"
 
   putStr "Representative input data & arguments [no input/arguments]:"
+  hFlush stdout
   args <- readLnWDefault ""
 
   putStr "Times to run program for fitness measurement [1]:"
+  hFlush stdout
   nRuns <- readLnWDefault "1"
 
   -- Now we take their answers and produce a configuration file
@@ -180,7 +186,7 @@ calculateFitRuns projDir args timeLimit metric (accTime, accMetric) n = do
  -}
 convertTimeToGens :: String -> String -> Double -> MetricType -> IO (Int, Int, Int, Int64, Double, Double)
 convertTimeToGens projDir args timeLimit metric = do
-                          buildProj projDir
+                          -- buildProj projDir
                           (baseTime, baseMetric) <- benchmark projDir args (timeLimit) metric 1
                           (meanTime, meanMetric, nRuns) <- calculateFitRuns projDir args (timeLimit) metric (baseTime, baseMetric) 1
                           -- Remove the number of program runs per chromosome from time limit
